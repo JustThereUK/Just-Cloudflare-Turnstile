@@ -8,83 +8,176 @@ Support URI: https://justthere.co.uk/plugins/just-cloudflare-turnstile/support
 Feature Request URI: https://justthere.co.uk/plugins/just-cloudflare-turnstile/feature-request
 Donate link: https://justthere.co.uk/plugins/support-us/
 Requires at least: 6.0
-Tested up to: 6.7
+Tested up to: 6.8
 Stable tag: 1.0.0
 Version: 1.0.0
 Requires PHP: 7.4
 License: GNU General Public License v3.0 or later
 License URI: http://www.gnu.org/licenses/gpl.html
-Tags: cloudflare, captcha, turnstile, woocommerce, elementor, contact form 7, login form, registration form, spam prevention, privacy-first
+Tags: cloudflare turnstile, captcha, anti-spam, recaptcha alternative, form security, WordPress security
 
-Protect your WordPress site with Cloudflare Turnstile. This plugin adds Turnstile to login, registration, WooCommerce, Elementor, Contact Form 7, and more.
+Easily add Cloudflare Turnstile CAPTCHA to WordPress, WooCommerce, and contact forms. Stop spam, protect user privacy, and improve form security.
 
 == Description ==
-**Just Cloudflare Turnstile** is a lightweight, privacy-first CAPTCHA alternative for WordPress, built to integrate Cloudflare Turnstile into your most important forms without slowing down your site.
+**Just Cloudflare Turnstile** is a free, lightweight WordPress plugin that integrates Cloudflare Turnstile with your website’s forms. Stop spam, bots, and fake submissions—while providing a frustration-free and privacy-friendly user experience. No Google reCAPTCHA required.
 
-Whether you're securing your WordPress login, WooCommerce checkout, or third-party forms like Contact Form 7 and Elementor Forms—this plugin makes it easy to block spam while offering a seamless user experience.
+Turnstile is a CAPTCHA alternative that works invisibly or visibly, with no tracking, and better compliance with GDPR.
 
-👉 **No puzzles. No user friction. Just fast, invisible protection.**
+### 🔐 Protects the Following Forms Automatically:
+- WordPress login, registration, password reset, and comments
+- WooCommerce checkout, login, registration, pay-for-order
+- Contact forms and newsletter signups
 
 **Key Features:**
-✅ **Supports core WordPress forms** – login, registration, password reset, and comments  
-✅ **Integrates with WooCommerce** – login, registration, checkout, and password reset  
-✅ **Elementor Forms & Contact Form 7 support**  
-✅ **WooCommerce Block Checkout compatible**  
-✅ **Submission logs** – review form attempts and validation status  
-✅ **Custom error messages**  
-✅ **Debug logging for developers**  
-✅ **Whitelisting rules** – skip Turnstile for specific users, roles, IPs, or conditions  
-✅ **Modern admin UI** – clean, intuitive, and built for usability  
-✅ **Lightweight & privacy-friendly** – no tracking, fully GDPR-compliant  
+- Lightweight and privacy-focused
+- Simple to set up and 100% free
+- Works with dozens of popular plugins
+- No tracking or personal data collection
+- Multisite-compatible
+- GDPR-friendly
 
-**Why Choose Just Cloudflare Turnstile?**
-- Effortlessly protect your site with invisible CAPTCHA from Cloudflare  
-- Save time battling spam and bots  
-- Works great with modern form builders and checkout systems  
-- Built with performance and UX in mind
+**Why Choose Just Duplicate?**
+- Save time by automating repetitive content creation tasks.
+- Maintain consistency across your website with accurate duplication.
+- Enhance workflow with advanced features like batch duplication and role-based access control.
 
-For more details, visit [our website](https://justthere.co.uk/plugins/just-cloudflare-turnstile).
+== Supported Forms & Integrations ==
+
+**Core WordPress**
+- Login
+- Registration
+- Password Reset
+- Comments
+
+**WooCommerce**
+- Checkout (including Checkout Blocks)
+- Login
+- Registration
+- Pay For Order
+- Lost Password
+
+**Form Plugins**
+- WPForms
+- Fluent Forms
+- Contact Form 7
+- Gravity Forms
+- Forminator
+- Formidable Forms
+- Kadence Blocks Forms
+- Jetpack Forms
+
+**Newsletter & Marketing Forms**
+- Mailchimp for WordPress (MC4WP)
+- MailPoet
+
+**Membership & Community**
+- MemberPress
+- Ultimate Member
+- WP-Members
+- WP User Frontend
+- Paid Memberships Pro
+- BuddyPress
+- bbPress
+- Clean Login
+
+**Other Builders**
+- Elementor Pro Forms
+- CheckoutWC
+- Flux Checkout
+
+== Features ==
+
+- ✅ Add Turnstile to dozens of forms in 1-click
+- 🔒 Disable submit buttons until challenge is complete
+- 🎨 Choose appearance: Always visible or "invisible"
+- 🌍 Customize language, theme, and size
+- 💬 Custom error/failure messages
+- 📋 IP/User-Agent/User Role Whitelisting
+- 📈 Optional debug log of form submissions
+- 🧼 Remove all plugin settings on uninstall
+
+== How to Use ==
+
+1. Install the plugin and activate it.
+2. Visit **Settings > Cloudflare Turnstile** in your WordPress dashboard.
+3. Generate a Site Key and Secret Key in your [Cloudflare Dashboard](https://dash.cloudflare.com/?to=/:account/turnstile).
+4. Paste the keys into the settings page.
+5. Select the forms where you want Turnstile to appear.
+6. Click **Save Changes**, then **Test API Response** to confirm it's working.
+
+== What is Cloudflare Turnstile? ==
+
+Cloudflare Turnstile is a smart CAPTCHA alternative that verifies users without requiring them to solve puzzles, click images, or enter characters.
+
+- Works invisibly behind the scenes (or visibly if you prefer)
+- Never tracks or fingerprints users
+- Built by Cloudflare with security, speed, and privacy in mind
+
+Learn more on the [official Turnstile page](https://www.cloudflare.com/products/turnstile/)
 
 == Installation ==
 
 **From the WordPress Admin:**
-1. Go to **Plugins > Add New**.
-2. Search for **"Just Cloudflare Turnstile"**.
+1. Navigate to **Plugins > Add New**.
+2. Search for **"Just Duplicate"**.
 3. Click **Install Now**, then **Activate**.
 
 **Manual Installation:**
-1. Download the plugin ZIP file from the [WordPress Repository](https://wordpress.org/plugins/just-cloudflare-turnstile) or [GitHub Repository](https://github.com/JustThereUK/Just-Cloudflare-Turnstile).
+1. Download the plugin ZIP file from the [WordPress Repository](https://wordpress.org/plugins/just-duplicate) or [GitHub Repository](https://github.com/JustThereUK/Just-Duplicate).
 2. Upload the extracted folder to **wp-content/plugins/**.
-3. Go to **Plugins > Installed Plugins**, find "Just Cloudflare Turnstile", and click **Activate**.
+3. Go to **Plugins > Installed Plugins**, find "Just Duplicate", and click **Activate**.
 
 == Frequently Asked Questions ==
 
-= Do I need a Cloudflare account to use this plugin? =
-Yes. You'll need a free Cloudflare account to generate a Turnstile Site Key and Secret Key. You can set these in the plugin settings.
+= Is this plugin free? =  
+Yes! 100% free, no premium version, no ads, and no data tracking.
 
-= What forms are supported? =
-The plugin supports WordPress login, registration, password reset, comments, WooCommerce forms (including checkout), Elementor Forms, and Contact Form 7. More integrations are coming soon.
+= Is Cloudflare Turnstile free? =  
+Yes. Cloudflare Turnstile is free to use and requires only a free Cloudflare account.
 
-= Is it compatible with WooCommerce Block Checkout? =
-Yes! Full support for the block-based WooCommerce checkout is built in.
+= Will this plugin help with GDPR compliance? =  
+Yes. Turnstile is privacy-first and does not track users. Learn more about [Cloudflare’s GDPR compliance](https://www.cloudflare.com/gdpr/).
 
-= Does this plugin slow down my site? =
-Not at all. The plugin is lightweight, loads conditionally, and follows best performance practices.
+= The CAPTCHA isn’t showing—what do I do? =  
+Make sure:
+1. Your site and secret keys are entered correctly
+2. You’ve selected which forms to apply it to
+3. You’ve completed the **Test API Response** step
 
-= Is it GDPR-compliant? =
-Yes. Cloudflare Turnstile is a privacy-first CAPTCHA alternative and does not track users.
+If it still doesn't work, open a [support topic](https://wordpress.org/support/plugin/just-cloudflare-turnstile/#new-topic-0).
 
-= Where can I get support? =
-Visit [our support page](https://justthere.co.uk/plugins/just-cloudflare-turnstile/support) or ask in the WordPress plugin forum.
+= Is this plugin compatible with my theme or other plugins? =  
+Yes. It works with most themes and popular plugins. If you experience an issue, report it via the [support forum](https://wordpress.org/support/plugin/just-cloudflare-turnstile/).
 
 == Screenshots ==
-1. Admin settings panel.
-2. Turnstile displayed on WordPress login.
-3. Turnstile on WooCommerce checkout.
-4. Debug log view.
-5. Whitelist rules interface.
+
+1. Turnstile on WordPress Login
+2. Turnstile on Registration Page
+3. Turnstile on Comment Form
+4. Turnstile on WooCommerce Checkout
+5. Turnstile inside Contact Form 7
+6. Clean, user-friendly settings panel
+7. Admin test response screen
 
 == Changelog ==
 
 = 1.0.0 =
-* Initial release – Turnstile support for WordPress core forms, WooCommerce, Elementor Forms, and Contact Form 7.
+- Initial release with full support for:
+  - WordPress login, register, reset, comments
+  - WooCommerce checkout & login/register
+  - Major form plugins (CF7, WPForms, Fluent, Gravity, etc.)
+  - Membership/community integrations (MemberPress, Ultimate Member, etc.)
+  - Block-based forms like Kadence, Jetpack, Elementor
+  - Email integrations (MailPoet, Mailchimp)
+  - Advanced admin panel with API testing, logging, and more
+
+== Upgrade Notice ==
+= 1.0. =
+- No Major Changes (Safe Update)
+
+== Copyright ==
+Just Duplicate is built with ❤️ by Just There.
+
+== Credits ==
+Cloudflare Turnstile is a product of [Cloudflare](https://www.cloudflare.com/products/turnstile/)
+Plugin developed by [Just There](https://justthere.co.uk)
