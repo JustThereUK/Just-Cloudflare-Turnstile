@@ -18,6 +18,7 @@ use function submit_button;
 use function in_array;
 use function defined;
 use function __;
+use function settings_errors;
 
 defined('ABSPATH') || exit;
 
@@ -50,10 +51,12 @@ class Settings_UI {
             return;
         }
 
-        // Show custom settings-updated notice
-        if (isset($_GET['settings-updated']) && $_GET['settings-updated']) {
-            add_settings_error('jct_notices', 'settings_updated', __('Settings saved.', 'just-cloudflare-turnstile'), 'updated');
-        }
+        // Remove default success notice WordPress adds automatically
+        add_filter('get_settings_errors', function ($errors) {
+            return array_filter($errors, function ($error) {
+                return $error['code'] !== 'settings_updated';
+            });
+        });
 
         $settings = Admin_Options::get_settings();
         $active_plugins = \apply_filters('active_plugins', \get_option('active_plugins', []));
@@ -91,7 +94,6 @@ class Settings_UI {
         });
         ?>
         <div class="wrap" id="jct-admin-app">
-            <?php settings_errors('jct_notices'); ?>
             <div class="jct-settings-intro">
                 <h1 class="jct-admin-title">Just Cloudflare Turnstile</h1>
                 <p>Seamlessly integrate Cloudflare’s free Turnstile CAPTCHA into your WordPress forms to enhance security and reduce spam – without compromising user experience.</p>
@@ -102,8 +104,8 @@ class Settings_UI {
                     <a href="https://justthere.co.uk/plugins/support-us/" target="_blank" rel="noopener">Buy us a coffee</a>
                 </div>
             </div>
-            <form method="post" action="" autocomplete="off" novalidate>
-                <?php \settings_fields('jct_settings'); ?>
+            <form method="post" action="options.php" autocomplete="off" novalidate>
+                <?php \settings_fields('jct_settings_group'); ?>
                 <?php \wp_nonce_field('jct_settings_save', 'jct_settings_nonce'); ?>
 
                 <!-- Site Keys (no accordion, now at top) -->

@@ -28,7 +28,7 @@ class Admin_Options {
      * Register plugin settings using WordPress Settings API.
      */
     public static function register_settings() {
-        \register_setting(self::OPTION_NAME, self::OPTION_NAME, [
+        \register_setting('jct_settings_group', self::OPTION_NAME, [
             'type' => 'array',
             'description' => \__('Just Cloudflare Turnstile Settings', 'just-cloudflare-turnstile'),
             'sanitize_callback' => [__CLASS__, 'sanitize'],
@@ -46,7 +46,8 @@ class Admin_Options {
     public static function sanitize($settings) {
         // Nonce verification for CSRF protection
         if (!isset($_POST['jct_settings_nonce']) || !function_exists('wp_verify_nonce') || !wp_verify_nonce($_POST['jct_settings_nonce'], 'jct_settings_save')) {
-            return [];
+            // If nonce is invalid, return previous settings to avoid wiping options
+            return get_option(self::OPTION_NAME, []);
         }
         $clean = [];
 

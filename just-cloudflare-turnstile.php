@@ -25,6 +25,10 @@ define('JCT_ASSETS_URL', JCT_URL . 'assets/');
 
 // Autoload Core Loader
 require_once JCT_INCLUDES_PATH . 'core/class-turnstile-loader.php';
+require_once JCT_INCLUDES_PATH . 'admin/class-admin-options.php';
+JCT\Admin\Admin_Options::init();
+require_once JCT_INCLUDES_PATH . 'admin/class-settings-ui.php';
+JCT\Admin\Settings_UI::init();
 
 // Load plugin textdomain for translations
 add_action('init', 'jct_load_textdomain');
