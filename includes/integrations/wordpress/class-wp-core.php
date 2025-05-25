@@ -65,7 +65,7 @@ class WP_Core {
         $unique_id = 'cf-turnstile-' . \esc_attr($context);
 
         // Always output the id attribute for the Turnstile div
-        echo '<div id="' . $unique_id . '" class="cf-turnstile" data-sitekey="' . \esc_attr($site_key) . '" data-theme="' . \esc_attr($settings['theme'] ?? 'auto') . '" data-size="' . \esc_attr($settings['widget_size'] ?? 'normal') . '" data-appearance="' . \esc_attr($settings['appearance'] ?? 'always') . '"></div>';
+        echo '<div id="' . $unique_id . '" class="cf-turnstile" style="display: flex; justify-content: center;" data-sitekey="' . \esc_attr($site_key) . '" data-theme="' . \esc_attr($settings['theme'] ?? 'auto') . '" data-size="' . \esc_attr($settings['widget_size'] ?? 'normal') . '" data-appearance="' . \esc_attr($settings['appearance'] ?? 'always') . '"></div>';
     }
 
     /**
