@@ -3,8 +3,8 @@
   margin: 18px 0;
   min-height: 70px;
   display: flex;
-  align-items: left;
-  justify-content: flex-start; /* Left align */
+  align-items: center;
+  justify-content: center !important;
   position: relative;
 }
 

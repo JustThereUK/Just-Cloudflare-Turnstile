@@ -2,6 +2,7 @@
 namespace JCT\Integrations\Forms;
 
 use JCT\Core\Whitelist;
+use JCT\Core\Turnstile_Validator;
 
 defined('ABSPATH') || exit;
 
@@ -52,74 +53,17 @@ class FluentForms {
     }
 
     public static function validate_turnstile($insertData, $data, $form) {
-        if (!self::is_valid_submission()) {
-            \wp_die(self::get_error_message(), 403);
+        if (!Turnstile_Validator::is_valid_submission(false)) {
+            \wp_die(Turnstile_Validator::get_error_message('fluentforms'), 403);
         }
     }
 
     public static function validate_turnstile_filter($errors, $formData, $form) {
         $token = $_POST['cf-turnstile-response'] ?? '';
-        if (!self::validate_token($token)) {
-            $errors['turnstile'] = \__('CAPTCHA validation failed. Please try again.', 'just-cloudflare-turnstile');
+        if (!Turnstile_Validator::validate_token($token)) {
+            $errors['turnstile'] = Turnstile_Validator::get_error_message('fluentforms');
         }
         return $errors;
-    }
-
-    private static function is_valid_submission() {
-        if (!isset($_POST['cf-turnstile-response'])) return false;
-
-        $settings = \get_option('jct_settings', []);
-        $secret = $settings['secret_key'] ?? '';
-        $response = \sanitize_text_field($_POST['cf-turnstile-response']);
-        $remoteip = $_SERVER['REMOTE_ADDR'] ?? '';
-
-        if (!$secret || !$response) return false;
-
-        $verify = \wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-            'body' => [
-                'secret'   => $secret,
-                'response' => $response,
-                'remoteip' => $remoteip,
-            ],
-        ]);
-
-        if (\is_wp_error($verify)) {
-            if (defined('WP_DEBUG') && WP_DEBUG) error_log('Turnstile verification error: ' . $verify->get_error_message());
-            return false;
-        }
-
-        $data = json_decode(\wp_remote_retrieve_body($verify), true);
-        return !empty($data['success']);
-    }
-
-    private static function validate_token($token) {
-        $settings = \get_option('jct_settings', []);
-        $secret = $settings['secret_key'] ?? '';
-        $remoteip = $_SERVER['REMOTE_ADDR'] ?? '';
-
-        if (!$secret || !$token) return false;
-
-        $verify = \wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-            'body' => [
-                'secret'   => $secret,
-                'response' => $token,
-                'remoteip' => $remoteip,
-            ],
-        ]);
-
-        if (\is_wp_error($verify)) {
-            if (defined('WP_DEBUG') && WP_DEBUG) error_log('Turnstile verification error: ' . $verify->get_error_message());
-            return false;
-        }
-
-        $data = json_decode(\wp_remote_retrieve_body($verify), true);
-        return !empty($data['success']);
-    }
-
-    private static function get_error_message() {
-        $settings = \get_option('jct_settings', []);
-        $message = !empty($settings['error_message']) ? $settings['error_message'] : \__('Please complete the Turnstile challenge.', 'just-cloudflare-turnstile');
-        return \apply_filters('jct_fluentforms_turnstile_error_message', \esc_html($message));
     }
 
     public static function render_turnstile_above_submit($item, $form) {

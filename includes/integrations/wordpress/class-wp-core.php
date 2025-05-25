@@ -2,6 +2,7 @@
 namespace JCT\Integrations\WordPress;
 
 use JCT\Core\Whitelist;
+use JCT\Core\Turnstile_Validator;
 
 defined('ABSPATH') || exit;
 
@@ -71,8 +72,8 @@ class WP_Core {
      * Validate Turnstile on login.
      */
     public static function validate_login($user, $username, $password) {
-        if (!self::is_valid_submission()) {
-            return new \WP_Error('turnstile_failed', self::get_error_message());
+        if (!Turnstile_Validator::is_valid_submission()) {
+            return new \WP_Error('turnstile_failed', Turnstile_Validator::get_error_message('wp_core'));
         }
         return $user;
     }
@@ -81,8 +82,8 @@ class WP_Core {
      * Validate on registration and lost password.
      */
     public static function validate_generic($errors) {
-        if (!self::is_valid_submission()) {
-            $errors->add('turnstile_failed', self::get_error_message());
+        if (!Turnstile_Validator::is_valid_submission()) {
+            $errors->add('turnstile_failed', Turnstile_Validator::get_error_message('wp_core'));
         }
         return $errors;
     }
@@ -91,8 +92,8 @@ class WP_Core {
      * Validate on password reset.
      */
     public static function validate_reset($user) {
-        if (!self::is_valid_submission()) {
-            \wp_die(self::get_error_message(), 403);
+        if (!Turnstile_Validator::is_valid_submission()) {
+            \wp_die(Turnstile_Validator::get_error_message('wp_core'), 403);
         }
     }
 
@@ -100,58 +101,9 @@ class WP_Core {
      * Validate comment form.
      */
     public static function validate_comment($commentdata) {
-        if (!self::is_valid_submission()) {
-            \wp_die(self::get_error_message(), 403);
+        if (!Turnstile_Validator::is_valid_submission()) {
+            \wp_die(Turnstile_Validator::get_error_message('wp_core'), 403);
         }
         return $commentdata;
-    }
-
-    /**
-     * Check if Turnstile challenge was passed.
-     */
-    private static function is_valid_submission(): bool {
-        // Verify nonce for CSRF protection
-        if (!isset($_POST['jct_turnstile_nonce']) || !wp_verify_nonce($_POST['jct_turnstile_nonce'], 'jct_turnstile_action')) {
-            return false;
-        }
-        if (!isset($_POST['cf-turnstile-response'])) {
-            return false;
-        }
-
-        $settings = \get_option('jct_settings', []);
-        $secret = $settings['secret_key'] ?? '';
-        $response = \sanitize_text_field($_POST['cf-turnstile-response']);
-        $remoteip = $_SERVER['REMOTE_ADDR'] ?? '';
-
-        if (!$secret || !$response) {
-            return false;
-        }
-
-        $verify = \wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-            'body' => [
-                'secret'   => $secret,
-                'response' => $response,
-                'remoteip' => $remoteip,
-            ],
-        ]);
-
-        if (\is_wp_error($verify)) {
-            // Optionally log the error for debugging
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('Turnstile verification error: ' . $verify->get_error_message());
-            }
-            return false;
-        }
-
-        $data = json_decode(\wp_remote_retrieve_body($verify), true);
-        return !empty($data['success']);
-    }
-
-    /**
-     * Return the custom or fallback error message.
-     */
-    private static function get_error_message(): string {
-        $settings = \get_option('jct_settings', []);
-        return !empty($settings['error_message']) ? \esc_html($settings['error_message']) : \esc_html__('Please complete the Turnstile challenge.', 'just-cloudflare-turnstile');
     }
 }

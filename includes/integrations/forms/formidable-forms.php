@@ -3,6 +3,7 @@
 namespace JCT\Integrations\Forms;
 
 use JCT\Core\Whitelist;
+use JCT\Core\Turnstile_Validator;
 use function add_action;
 use function add_filter;
 use function get_option;
@@ -47,46 +48,10 @@ class FormidableForms {
     }
 
     public static function validate_turnstile($errors, $values, $form_id) {
-        if (!self::is_valid_submission()) {
-            $errors['form'] = self::get_error_message();
+        if (!Turnstile_Validator::is_valid_submission()) {
+            $errors['form'] = Turnstile_Validator::get_error_message('formidableforms');
         }
         return $errors;
-    }
-
-    private static function is_valid_submission() {
-        if (!isset($_POST['jct_turnstile_nonce']) || (function_exists('wp_verify_nonce') && !wp_verify_nonce($_POST['jct_turnstile_nonce'], 'jct_turnstile_action'))) {
-            return false;
-        }
-        if (!isset($_POST['cf-turnstile-response'])) {
-            return false;
-        }
-        $settings = get_option('jct_settings', []);
-        $secret = $settings['secret_key'] ?? '';
-        $response = sanitize_text_field($_POST['cf-turnstile-response']);
-        $remoteip = $_SERVER['REMOTE_ADDR'] ?? '';
-        if (!$secret || !$response) {
-            return false;
-        }
-        $verify = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-            'body' => [
-                'secret'   => $secret,
-                'response' => $response,
-                'remoteip' => $remoteip,
-            ],
-        ]);
-        if (is_wp_error($verify)) {
-            if (defined('WP_DEBUG') && WP_DEBUG) error_log('Turnstile verification error: ' . $verify->get_error_message());
-            return false;
-        }
-        $data = json_decode(wp_remote_retrieve_body($verify), true);
-        return !empty($data['success']);
-    }
-
-    private static function get_error_message() {
-        $settings = get_option('jct_settings', []);
-        $message = !empty($settings['error_message']) ? $settings['error_message'] : esc_html__('Please complete the Turnstile challenge.', 'just-cloudflare-turnstile');
-        $message = apply_filters('jct_formidableforms_turnstile_error_message', $message);
-        return esc_html($message);
     }
 }
 

@@ -18,6 +18,7 @@ class Turnstile_Loader {
      * Load core functionality like script handler and whitelist checks.
      */
     private static function load_core() {
+        require_once JCT_INCLUDES_PATH . 'core/class-turnstile-validator.php';
         require_once JCT_INCLUDES_PATH . 'core/class-script-handler.php';
         require_once JCT_INCLUDES_PATH . 'core/class-whitelist.php';
 

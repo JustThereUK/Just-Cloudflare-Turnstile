@@ -151,7 +151,7 @@
       });
     },
 
-    renderKadenceFormsWidgets: function () {
+    renderKadenceFåormsWidgets: function () {
       if (typeof turnstile === 'undefined') return;
       $('.kb-form .cf-turnstile').each(function () {
         const el = this;

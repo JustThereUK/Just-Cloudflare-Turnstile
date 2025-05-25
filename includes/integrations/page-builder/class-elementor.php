@@ -2,6 +2,7 @@
 namespace JCT\Integrations\PageBuilder;
 
 use JCT\Core\Whitelist;
+use JCT\Core\Turnstile_Validator;
 
 defined('ABSPATH') || exit;
 
@@ -133,8 +134,8 @@ class Elementor {
     }
 
     public static function validate_turnstile($record, $handler) {
-        if (!self::is_valid_submission()) {
-            $handler->add_error_message(self::get_error_message());
+        if (!Turnstile_Validator::is_valid_submission()) {
+            $handler->add_error_message(Turnstile_Validator::get_error_message('elementor'));
             $handler->add_error('__all__');
         }
     }
@@ -151,55 +152,6 @@ class Elementor {
             JCT_VERSION,
             true
         );
-    }
-
-    private static function is_valid_submission(): bool {
-        // Verify nonce for CSRF protection
-        if (!isset($_POST['jct_turnstile_nonce']) || (function_exists('wp_verify_nonce') && !wp_verify_nonce($_POST['jct_turnstile_nonce'], 'jct_turnstile_action'))) {
-            return false;
-        }
-        if (!isset($_POST['cf-turnstile-response'])) {
-            return false;
-        }
-
-        $settings = get_option('jct_settings', []);
-        $secret = $settings['secret_key'] ?? '';
-        $response = sanitize_text_field($_POST['cf-turnstile-response']);
-        $remoteip = $_SERVER['REMOTE_ADDR'] ?? '';
-
-        if (!$secret || !$response) {
-            return false;
-        }
-
-        $verify = wp_remote_post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-            'body' => [
-                'secret'   => $secret,
-                'response' => $response,
-                'remoteip' => $remoteip,
-            ],
-            'timeout' => 8,
-        ]);
-
-        if (is_wp_error($verify)) {
-            if (defined('WP_DEBUG') && WP_DEBUG) error_log('Turnstile verification error: ' . $verify->get_error_message());
-            return false;
-        }
-
-        $data = json_decode(wp_remote_retrieve_body($verify), true);
-        return !empty($data['success']);
-    }
-
-    private static function get_error_message(): string {
-        $settings = get_option('jct_settings', []);
-        $message = !empty($settings['error_message']) ? $settings['error_message'] : __('Please complete the Turnstile challenge.', 'just-cloudflare-turnstile');
-        /**
-         * Filter the Turnstile error message for Elementor forms.
-         *
-         * @param string $message The error message to display.
-         * @return string
-         */
-        $message = apply_filters('jct_elementor_turnstile_error_message', $message);
-        return esc_html($message);
     }
 }
 
