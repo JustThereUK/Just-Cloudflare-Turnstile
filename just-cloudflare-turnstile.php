@@ -1,14 +1,17 @@
 <?php
 /**
  * Plugin Name: Just Cloudflare Turnstile
- * Description: Seamlessly integrate Cloudflare Turnstile with WordPress, WooCommerce, and Elementor forms. Modern UI. Maximum compatibility. Zero spam.
- * Plugin URI: https://justthere.co.uk/
+ * Plugin URI: https://wordpress.org/plugins/just-cloudflare-turnstile
+ * Description: Seamlessly integrate Cloudflare Turnstile with WordPress, WooCommerce, and Elementor forms.
+ * Version: 1.0.0
+ * Requires at least: 5.0
+ * Tested up to: 6.8
+ * Requires PHP: 7.0
  * Author: Just There
  * Author URI: https://justthere.co.uk/
- * Version: 1.0.0
- * Requires at least: 5.5
- * Tested up to: 6.5
- * Requires PHP: 7.4
+ * Support Us: https://justthere.co.uk/plugins/support-us/
+ * License: GPLv3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain: just-cloudflare-turnstile
  * Domain Path: /languages
  */

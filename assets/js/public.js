@@ -151,25 +151,8 @@
       });
     },
 
-    renderKadenceFåormsWidgets: function () {
-      if (typeof turnstile === 'undefined') return;
-      $('.kb-form .cf-turnstile').each(function () {
-        const el = this;
-        if (el.dataset.rendered) return;
-        $(el).find('.jct-spinner').remove();
-        const params = {
-          sitekey: el.getAttribute('data-sitekey'),
-          theme: el.getAttribute('data-theme') || JCT.config.theme || 'auto',
-          size: JCT.sizeMap[el.getAttribute('data-size')] || 'normal',
-          appearance: el.getAttribute('data-appearance') || JCT.config.appearance || 'always',
-          callback: function (token) { JCT.setResponseInput(el, token); JCT.enableSubmit(el); },
-          'expired-callback': function () { JCT.setResponseInput(el, ''); JCT.disableSubmit(el); },
-          'error-callback': function () { JCT.setResponseInput(el, ''); JCT.disableSubmit(el); }
-        };
-        turnstile.render(el, params);
-        el.dataset.rendered = 'true';
-      });
-    },
+    // Only define renderKadenceFormsWidgets if Kadence_Blocks_Form is present and enabled
+    renderKadenceFormsWidgets: null,
 
     init: function retry(attempt = 0) {
       if (typeof turnstile === 'undefined') {
@@ -286,6 +269,30 @@
     }
   };
 
+  // Check if Kadence_Blocks_Form is present and enabled in settings
+  var kadenceEnabled = typeof Kadence_Blocks_Form !== 'undefined' || (window.JCTConfig && window.JCTConfig.enable_kadenceforms);
+  if (kadenceEnabled) {
+    JCT.renderKadenceFormsWidgets = function () {
+      if (typeof turnstile === 'undefined') return;
+      $('.kb-form .cf-turnstile').each(function () {
+        const el = this;
+        if (el.dataset.rendered) return;
+        $(el).find('.jct-spinner').remove();
+        const params = {
+          sitekey: el.getAttribute('data-sitekey'),
+          theme: el.getAttribute('data-theme') || JCT.config.theme || 'auto',
+          size: JCT.sizeMap[el.getAttribute('data-size')] || 'normal',
+          appearance: el.getAttribute('data-appearance') || JCT.config.appearance || 'always',
+          callback: function (token) { JCT.setResponseInput(el, token); JCT.enableSubmit(el); },
+          'expired-callback': function () { JCT.setResponseInput(el, ''); JCT.disableSubmit(el); },
+          'error-callback': function () { JCT.setResponseInput(el, ''); JCT.disableSubmit(el); }
+        };
+        turnstile.render(el, params);
+        el.dataset.rendered = 'true';
+      });
+    };
+  }
+
   $(document).ready(function () {
     JCT.init();
     JCT.observeDOM();
@@ -295,7 +302,7 @@
     JCT.renderFormidableFormsWidgets();
     JCT.renderForminatorWidgets();
     JCT.renderJetpackFormsWidgets();
-    JCT.renderKadenceFormsWidgets();
+    if (JCT.renderKadenceFormsWidgets) JCT.renderKadenceFormsWidgets();
 
     ['login', 'register', 'lostpassword', 'comment'].forEach(function (context) {
       const el = document.getElementById('cf-turnstile-' + context);
@@ -343,7 +350,9 @@
     }, 100);
   });
   $(document).on('kb-form-rendered', function () {
-    setTimeout(() => { try { JCT.renderKadenceFormsWidgets(); } catch (e) { if (window.console) console.error(e); } }, 100);
+    if (JCT.renderKadenceFormsWidgets) {
+      setTimeout(() => { try { JCT.renderKadenceFormsWidgets(); } catch (e) { if (window.console) console.error(e); } }, 100);
+    }
   });
 
 })(jQuery);

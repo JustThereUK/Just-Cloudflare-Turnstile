@@ -35,7 +35,7 @@ class Script_Handler {
         // Allow filtering of the Turnstile script URL
         $url = \apply_filters('jct_turnstile_script_url', $url, $settings);
 
-        \wp_enqueue_script('jct-turnstile', $url, [], null, true);
+        \wp_enqueue_script('jct-turnstile', $url, [], JCT_VERSION, true);
 
         // Defer Turnstile script if enabled
         if (!empty($settings['defer_scripts'])) {

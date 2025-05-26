@@ -1,15 +1,10 @@
 <?php
 namespace JCT\Integrations\Forms;
 
-use JCT\Core\Whitelist;
-use JCT\Core\Turnstile_Validator;
-
-defined('ABSPATH') || exit;
-
 class FluentForms {
     public static function init() {
-        error_log('[JCT] FluentForms::init() called.');
-        if (!(defined('FLUENTFORM') || class_exists('FluentForm')) || Whitelist::is_whitelisted()) {
+        // error_log('[JCT] FluentForms::init() called.'); // Removed debug log
+        if (!(defined('FLUENTFORM') || class_exists('FluentForm')) || \JCT\Core\Whitelist::is_whitelisted()) {
             return;
         }
 
@@ -33,10 +28,10 @@ class FluentForms {
             'element' => 'custom_html',
             'settings' => [
                 'label' => '',
-                'html' => '<div class="cf-turnstile" data-sitekey="' . esc_attr($site_key) . '" 
-                    data-theme="' . esc_attr($settings['theme'] ?? 'auto') . '" 
-                    data-size="' . esc_attr($settings['widget_size'] ?? 'normal') . '" 
-                    data-appearance="' . esc_attr($settings['appearance'] ?? 'always') . '"></div>'
+                'html' => '<div class="cf-turnstile" data-sitekey="' . \esc_attr($site_key) . '" 
+                    data-theme="' . \esc_attr($settings['theme'] ?? 'auto') . '" 
+                    data-size="' . \esc_attr($settings['widget_size'] ?? 'normal') . '" 
+                    data-appearance="' . \esc_attr($settings['appearance'] ?? 'always') . '"></div>'
             ]
         ];
 
@@ -53,15 +48,27 @@ class FluentForms {
     }
 
     public static function validate_turnstile($insertData, $data, $form) {
-        if (!Turnstile_Validator::is_valid_submission(false)) {
-            \wp_die(Turnstile_Validator::get_error_message('fluentforms'), 403);
+        if (!\JCT\Core\Turnstile_Validator::is_valid_submission(false)) {
+            \wp_die(\esc_html(\JCT\Core\Turnstile_Validator::get_error_message('fluentforms')), 403);
         }
     }
 
     public static function validate_turnstile_filter($errors, $formData, $form) {
-        $token = $_POST['cf-turnstile-response'] ?? '';
-        if (!Turnstile_Validator::validate_token($token)) {
-            $errors['turnstile'] = Turnstile_Validator::get_error_message('fluentforms');
+        // Nonce verification for security
+        $nonce = isset($_POST['_wpnonce']) ? $_POST['_wpnonce'] : '';
+        if (function_exists('wp_unslash')) {
+            $nonce = \wp_unslash($nonce);
+        }
+        if (function_exists('sanitize_text_field')) {
+            $nonce = \sanitize_text_field($nonce);
+        }
+        if (empty($nonce) || !\wp_verify_nonce($nonce, 'fluentform_submit')) {
+            $errors['turnstile'] = \__('Security check failed. Please refresh and try again.', 'just-cloudflare-turnstile');
+            return $errors;
+        }
+        $token = isset($_POST['cf-turnstile-response']) ? \sanitize_text_field(\wp_unslash($_POST['cf-turnstile-response'])) : '';
+        if (!\JCT\Core\Turnstile_Validator::validate_token($token)) {
+            $errors['turnstile'] = \JCT\Core\Turnstile_Validator::get_error_message('fluentforms');
         }
         return $errors;
     }
@@ -72,10 +79,10 @@ class FluentForms {
         $enabled = !empty($settings['enable_fluentforms']);
         if (!$enabled || !$site_key) return;
 
-        echo '<div class="cf-turnstile" data-sitekey="' . esc_attr($site_key) . '" 
-            data-theme="' . esc_attr($settings['theme'] ?? 'auto') . '" 
-            data-size="' . esc_attr($settings['widget_size'] ?? 'normal') . '" 
-            data-appearance="' . esc_attr($settings['appearance'] ?? 'always') . '"></div>';
+        echo '<div class="cf-turnstile" data-sitekey="' . \esc_attr($site_key) . '" 
+            data-theme="' . \esc_attr($settings['theme'] ?? 'auto') . '" 
+            data-size="' . \esc_attr($settings['widget_size'] ?? 'normal') . '" 
+            data-appearance="' . \esc_attr($settings['appearance'] ?? 'always') . '"></div>';
     }
 }
 

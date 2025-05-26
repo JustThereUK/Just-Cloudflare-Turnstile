@@ -3,13 +3,6 @@ namespace JCT\Admin;
 
 defined('ABSPATH') || exit;
 
-use function add_action;
-use function get_option;
-use function register_setting;
-use function sanitize_text_field;
-use function __;
-use function wp_verify_nonce;
-
 class Admin_Options {
 
     /**
@@ -45,15 +38,30 @@ class Admin_Options {
      */
     public static function sanitize($settings) {
         // Nonce verification for CSRF protection
-        if (!isset($_POST['jct_settings_nonce']) || !function_exists('wp_verify_nonce') || !wp_verify_nonce($_POST['jct_settings_nonce'], 'jct_settings_save')) {
+        $nonce = '';
+        if (isset($_POST['jct_settings_nonce'])) {
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce is being verified below
+            $nonce = $_POST['jct_settings_nonce'];
+            if (function_exists('wp_unslash')) {
+                $nonce = \wp_unslash($nonce);
+            }
+            if (function_exists('sanitize_text_field')) {
+                $nonce = \sanitize_text_field($nonce);
+            }
+        }
+        if (empty($nonce) || !function_exists('wp_verify_nonce') || !function_exists('get_option') || !\wp_verify_nonce($nonce, 'jct_settings_save')) {
             // If nonce is invalid, return previous settings to avoid wiping options
-            return get_option(self::OPTION_NAME, []);
+            if (function_exists('get_option')) {
+                return \get_option(self::OPTION_NAME, []);
+            } else {
+                return [];
+            }
         }
         $clean = [];
 
         // Site Key & Secret
-        $clean['site_key'] = function_exists('sanitize_text_field') ? sanitize_text_field($settings['site_key'] ?? '') : ($settings['site_key'] ?? '');
-        $clean['secret_key'] = function_exists('sanitize_text_field') ? sanitize_text_field($settings['secret_key'] ?? '') : ($settings['secret_key'] ?? '');
+        $clean['site_key'] = function_exists('sanitize_text_field') ? \sanitize_text_field($settings['site_key'] ?? '') : ($settings['site_key'] ?? '');
+        $clean['secret_key'] = function_exists('sanitize_text_field') ? \sanitize_text_field($settings['secret_key'] ?? '') : ($settings['secret_key'] ?? '');
 
         // Integrations toggles
         $clean['enable_wordpress'] = !empty($settings['enable_wordpress']) ? 1 : 0;
@@ -79,15 +87,15 @@ class Admin_Options {
 
         // Display Settings
         $clean['theme'] = in_array($settings['theme'] ?? '', ['auto', 'light', 'dark'], true) ? $settings['theme'] : 'auto';
-        $clean['language'] = \sanitize_text_field($settings['language'] ?? 'auto');
+        $clean['language'] = function_exists('sanitize_text_field') ? \sanitize_text_field($settings['language'] ?? 'auto') : ($settings['language'] ?? 'auto');
         $clean['disable_submit'] = !empty($settings['disable_submit']);
         $clean['widget_size'] = in_array($settings['widget_size'] ?? '', ['small', 'medium', 'large', 'normal'], true) ? $settings['widget_size'] : 'normal';
         $clean['appearance'] = in_array($settings['appearance'] ?? '', ['always', 'interaction-only'], true) ? $settings['appearance'] : 'always';
         $clean['defer_scripts'] = !empty($settings['defer_scripts']);
 
         // Messages
-        $clean['error_message'] = \sanitize_text_field($settings['error_message'] ?? '');
-        $clean['extra_message'] = \sanitize_text_field($settings['extra_message'] ?? '');
+        $clean['error_message'] = function_exists('sanitize_text_field') ? \sanitize_text_field($settings['error_message'] ?? '') : ($settings['error_message'] ?? '');
+        $clean['extra_message'] = function_exists('sanitize_text_field') ? \sanitize_text_field($settings['extra_message'] ?? '') : ($settings['extra_message'] ?? '');
 
         // Whitelist
         $clean['whitelist_loggedin'] = !empty($settings['whitelist_loggedin']);
@@ -100,7 +108,9 @@ class Admin_Options {
         $uas = array_filter(array_map('trim', explode("\n", $settings['whitelist_user_agents'] ?? '')), function($ua) {
             return !empty($ua);
         });
-        $uas = array_map('sanitize_text_field', $uas);
+        $uas = array_map(function($ua) {
+            return function_exists('sanitize_text_field') ? \sanitize_text_field($ua) : $ua;
+        }, $uas);
         $clean['whitelist_user_agents'] = implode("\n", $uas);
 
         return $clean;

@@ -1,15 +1,21 @@
 === Just Cloudflare Turnstile ===
-Contributors: justthere
-Donate link: https://justthere.co.uk/
-Tags: cloudflare, turnstile, captcha, recaptcha, spam, security, forms, elementor, woocommerce, wpforms, gravity forms, formidable forms, fluent forms, kadence, jetpack, contact form 7, forminator
-Requires at least: 5.5
-Tested up to: 6.5
-Requires PHP: 7.4
+Plugin Name: Just Cloudflare Turnstile
+Author: Just There
+Contributors: carlbensy16
+Plugin URI: https://wordpress.org/plugins/just-cloudflare-turnstile
+Documentation URI: https://justthere.co.uk/plugins/just-cloudflare-turnstile/documentation
+Support URI: https://justthere.co.uk/plugins/just-cloudflare-turnstile/support
+Feature Request URI: https://justthere.co.uk/plugins/just-cloudflare-turnstile/feature-request
+Donate link: https://justthere.co.uk/plugins/support-us/
+Requires at least: 5.0
+Tested up to: 6.8
 Stable tag: 1.0.0
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Version: 1.0.0
+Requires PHP: 7.0
+License: GNU General Public License v3.0 or later
+License URI: http://www.gnu.org/licenses/gpl.html
 
-Cloudflare Turnstile CAPTCHA for WordPress, WooCommerce, Elementor, WPForms, Gravity Forms, Fluent Forms, Formidable, Contact Form 7, Forminator, Jetpack, and Kadence. Lightweight, privacy-first, and easy to use.
+Cloudflare Turnstile CAPTCHA for WordPress, WooCommerce, Elementor, and all major forms. Lightweight and privacy-first.
 
 == Description ==
 

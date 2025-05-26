@@ -84,7 +84,6 @@ class Turnstile_Loader {
             require_once JCT_INCLUDES_PATH . 'integrations/forms/fluent-forms.php';
             if (class_exists('JCT\\Integrations\\Forms\\FluentForms')) {
                 \JCT\Integrations\Forms\FluentForms::init();
-                error_log('[JCT] FluentForms::init() called.');
             }
         }
         // Gravity Forms

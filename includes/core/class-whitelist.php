@@ -36,7 +36,7 @@ class Whitelist {
 
         // 3. Whitelisted User Agents
         if (!empty($settings['whitelist_user_agents']) && !empty($_SERVER['HTTP_USER_AGENT'])) {
-            $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+            $ua = strtolower(\sanitize_text_field(\wp_unslash($_SERVER['HTTP_USER_AGENT'])));
             $patterns = array_filter(array_map('trim', explode("\n", strtolower($settings['whitelist_user_agents']))));
             foreach ($patterns as $pattern) {
                 if (stripos($ua, $pattern) !== false) {
@@ -64,7 +64,7 @@ class Whitelist {
             'REMOTE_ADDR'
         ] as $key) {
             if (array_key_exists($key, $_SERVER)) {
-                foreach (explode(',', $_SERVER[$key]) as $ip) {
+                foreach (explode(',', \sanitize_text_field(\wp_unslash($_SERVER[$key]))) as $ip) {
                     $ip = trim($ip);
                     if (filter_var($ip, FILTER_VALIDATE_IP)) {
                         return $ip;

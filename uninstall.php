@@ -21,6 +21,7 @@ function jct_remove_plugin_data() {
     // Multisite support: remove settings from all sites
     if (is_multisite()) {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Direct DB query is required for multisite uninstall and caching is not needed for this one-time operation.
         $site_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
         foreach ($site_ids as $site_id) {
             switch_to_blog($site_id);

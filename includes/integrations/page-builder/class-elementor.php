@@ -10,6 +10,7 @@ use function add_action;
 use function get_option;
 use function esc_attr;
 use function esc_html;
+use function esc_attr_e;
 use function __;
 use function wp_enqueue_script;
 use function sanitize_text_field;
@@ -17,24 +18,19 @@ use function wp_remote_post;
 use function is_wp_error;
 use function wp_remote_retrieve_body;
 use function is_admin;
-use function error_log;
 
 class Elementor {
 
     public static function init() {
         if (!defined('ELEMENTOR_VERSION')) {
-            if (defined('WP_DEBUG') && WP_DEBUG) error_log('JCT: Elementor not detected.');
             return;
         }
         if (Whitelist::is_whitelisted()) {
-            if (defined('WP_DEBUG') && WP_DEBUG) error_log('JCT: Whitelist is blocking Elementor integration.');
-            if (!is_admin() && isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'elementor') !== false) {
-                if (defined('WP_DEBUG') && WP_DEBUG) error_log('JCT: Fallback - forcing Elementor integration.');
+            if (!is_admin() && isset($_SERVER['REQUEST_URI']) && strpos(sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])), 'elementor') !== false) {
             } else {
                 return;
             }
         }
-        if (defined('WP_DEBUG') && WP_DEBUG) error_log('JCT: Initializing Elementor integration.');
         add_action('elementor/frontend/init', [__CLASS__, 'register_widget_hooks']);
         add_action('elementor/widget/form/after_render', [__CLASS__, 'inject_widget_script'], 10, 2);
         add_action('elementor_pro/forms/validation', [__CLASS__, 'validate_turnstile'], 10, 2);
@@ -49,7 +45,6 @@ class Elementor {
     }
 
     public static function render_widget($form) {
-        if (defined('WP_DEBUG') && WP_DEBUG) error_log('JCT: render_widget called for Elementor form.');
         $settings = get_option('jct_settings', []);
         $site_key = $settings['site_key'] ?? '';
 
@@ -77,8 +72,8 @@ class Elementor {
 
         add_action('wp_footer', function () {
             $settings = get_option('jct_settings', []);
-            $site_key = esc_attr($settings["site_key"] ?? '');
-            $theme = esc_attr($settings["theme"] ?? 'auto');
+            $site_key = $settings["site_key"] ?? '';
+            $theme = $settings["theme"] ?? 'auto';
 
             if (!$site_key) return;
 
@@ -89,7 +84,7 @@ class Elementor {
                         if (!wrapper.querySelector('.jct-turnstile')) {
                             const container = document.createElement('div');
                             container.className = 'jct-turnstile-wrapper';
-                            container.innerHTML = `<div class="jct-turnstile" data-sitekey="<?php echo $site_key; ?>" data-theme="<?php echo $theme; ?>"></div>`;
+                            container.innerHTML = `<div class=\"jct-turnstile\" data-sitekey=\"<?php echo esc_attr($site_key); ?>\" data-theme=\"<?php echo esc_attr($theme); ?>\"></div>`;
                             wrapper.appendChild(container);
                         }
                     });
@@ -104,10 +99,10 @@ class Elementor {
      */
     public static function fallback_inject_widget() {
         $settings = get_option('jct_settings', []);
-        $site_key = esc_attr($settings['site_key'] ?? '');
-        $theme = esc_attr($settings['theme'] ?? 'auto');
-        $size = esc_attr($settings['widget_size'] ?? 'normal');
-        $appearance = esc_attr($settings['appearance'] ?? 'always');
+        $site_key = $settings['site_key'] ?? '';
+        $theme = $settings['theme'] ?? 'auto';
+        $size = $settings['widget_size'] ?? 'normal';
+        $appearance = $settings['appearance'] ?? 'always';
         if (!$site_key) return;
         ?>
         <script>
@@ -120,10 +115,10 @@ class Elementor {
                 if (!wrapper.querySelector('.cf-turnstile')) {
                     var container = document.createElement('div');
                     container.className = 'cf-turnstile';
-                    container.setAttribute('data-sitekey', '<?php echo $site_key; ?>');
-                    container.setAttribute('data-theme', '<?php echo $theme; ?>');
-                    container.setAttribute('data-size', '<?php echo $size; ?>');
-                    container.setAttribute('data-appearance', '<?php echo $appearance; ?>');
+                    container.setAttribute('data-sitekey', '<?php echo esc_attr($site_key); ?>');
+                    container.setAttribute('data-theme', '<?php echo esc_attr($theme); ?>');
+                    container.setAttribute('data-size', '<?php echo esc_attr($size); ?>');
+                    container.setAttribute('data-appearance', '<?php echo esc_attr($appearance); ?>');
                     // Insert before the submit button group
                     submitGroup.parentNode.insertBefore(container, submitGroup);
                 }
