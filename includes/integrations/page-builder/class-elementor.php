@@ -62,36 +62,7 @@ class Elementor {
     }
 
     public static function inject_widget_script($widget, $args) {
-        if ('form' !== $widget->get_name()) {
-            return;
-        }
-
-        static $injected = false;
-        if ($injected) return;
-        $injected = true;
-
-        add_action('wp_footer', function () {
-            $settings = get_option('jct_settings', []);
-            $site_key = $settings["site_key"] ?? '';
-            $theme = $settings["theme"] ?? 'auto';
-
-            if (!$site_key) return;
-
-            ?>
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    document.querySelectorAll('.elementor-form-fields-wrapper').forEach(wrapper => {
-                        if (!wrapper.querySelector('.jct-turnstile')) {
-                            const container = document.createElement('div');
-                            container.className = 'jct-turnstile-wrapper';
-                            container.innerHTML = `<div class=\"jct-turnstile\" data-sitekey=\"<?php echo esc_attr($site_key); ?>\" data-theme=\"<?php echo esc_attr($theme); ?>\"></div>`;
-                            wrapper.appendChild(container);
-                        }
-                    });
-                });
-            </script>
-            <?php
-        });
+        // No longer needed; logic moved to elementor.js
     }
 
     /**
@@ -108,10 +79,8 @@ class Elementor {
         <script>
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.elementor-form-fields-wrapper').forEach(function(wrapper) {
-                // Find the submit button group
                 var submitGroup = wrapper.querySelector('.elementor-field-type-submit');
                 if (!submitGroup) return;
-                // Only insert if not already present
                 if (!wrapper.querySelector('.cf-turnstile')) {
                     var container = document.createElement('div');
                     container.className = 'cf-turnstile';
@@ -119,7 +88,6 @@ class Elementor {
                     container.setAttribute('data-theme', '<?php echo esc_attr($theme); ?>');
                     container.setAttribute('data-size', '<?php echo esc_attr($size); ?>');
                     container.setAttribute('data-appearance', '<?php echo esc_attr($appearance); ?>');
-                    // Insert before the submit button group
                     submitGroup.parentNode.insertBefore(container, submitGroup);
                 }
             });
@@ -136,7 +104,7 @@ class Elementor {
     }
 
     public static function disable_submit_css() {
-        echo "<style>.elementor-form button[type=submit] { pointer-events: none; opacity: 0.5; }</style>";
+        // No longer needed; logic moved to elementor.js or CSS file
     }
 
     public static function enqueue_scripts() {
@@ -147,6 +115,8 @@ class Elementor {
             JCT_VERSION,
             true
         );
+        // Optionally enqueue a CSS file if you want to move styles out of JS
+        // wp_enqueue_style('jct-elementor', JCT_ASSETS_URL . 'css/elementor.css', [], JCT_VERSION);
     }
 }
 

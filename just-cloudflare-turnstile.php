@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: Just Cloudflare Turnstile
+ * Plugin Name: Just Cloudflare Turnstile – Modern CAPTCHA Alternative
  * Plugin URI: https://wordpress.org/plugins/just-cloudflare-turnstile
  * Description: Seamlessly integrate Cloudflare Turnstile with WordPress, WooCommerce, and Elementor forms.
  * Version: 1.0.0
@@ -34,10 +34,11 @@ require_once JCT_INCLUDES_PATH . 'admin/class-settings-ui.php';
 JCT\Admin\Settings_UI::init();
 
 // Load plugin textdomain for translations
-add_action('init', 'jct_load_textdomain');
-function jct_load_textdomain() {
-    load_plugin_textdomain('just-cloudflare-turnstile', false, dirname(plugin_basename(__FILE__)) . '/languages');
-}
+add_action('init', function() {
+    if (version_compare(get_bloginfo('version'), '4.6', '<')) {
+        load_plugin_textdomain('just-cloudflare-turnstile', false, dirname(plugin_basename(__FILE__)) . '/languages');
+    }
+});
 
 // Initialize Plugin
 add_action('plugins_loaded', 'jct_init_plugin');

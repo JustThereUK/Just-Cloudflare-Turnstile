@@ -1,5 +1,5 @@
-=== Just Cloudflare Turnstile ===
-Plugin Name: Just Cloudflare Turnstile
+=== Just Cloudflare Turnstile – Modern CAPTCHA Alternative ===
+Plugin Name: Just Cloudflare Turnstile – Modern CAPTCHA Alternative
 Author: Just There
 Contributors: carlbensy16
 Plugin URI: https://wordpress.org/plugins/just-cloudflare-turnstile
@@ -112,6 +112,20 @@ Stable launch with complete Turnstile protection for WordPress, WooCommerce, Ele
 == Copyright ==
 Just Duplicate is built with ❤️ by Just There.
 
+== Disclaimer ==
+This plugin is not affiliated with or endorsed by Cloudflare, Inc. “Cloudflare” and “Turnstile” are trademarks of Cloudflare, Inc.
+
 == Credits ==
 Cloudflare Turnstile is a product of [Cloudflare](https://www.cloudflare.com/products/turnstile/)
 Plugin developed by [Just There](https://justthere.co.uk)
+
+== External Services ==
+This plugin connects to Cloudflare Turnstile for spam prevention. It sends the following data:
+- Site key
+- User IP and user-agent (via Cloudflare SDK)
+
+Cloudflare Turnstile Terms:
+https://developers.cloudflare.com/turnstile/
+
+Privacy Policy:
+https://www.cloudflare.com/privacypolicy/
